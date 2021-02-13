@@ -10,6 +10,8 @@ app.get("/", (req, res) => {
     res.send("You have hit the backend!")
 })
 
+app.use("/users", require("./api/userRoutes"))
+
 const PORT = process.env.PORT || 8000
 const server = app.listen(PORT, () => {
     console.log(`🔥You are listening on PORT: ${PORT}🔥`);
