@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -85,9 +86,12 @@ router.post("/login", async (req, res) => {
                     JWT_SECRET,
                     { expiresIn: "1h" },
                     (error, token) => {
+                        if (error) {
+                            console.log("error creating token");
+                        }
                         res.json({
                             success: true,
-                            token,
+                            token: token,
                         });
                     }
                 );
