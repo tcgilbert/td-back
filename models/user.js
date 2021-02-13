@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   user.init({
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -34,12 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        min: {
-          args: 8,
-          msg: "Password with at least 8 characters required"
-        }
-      }
     }
   }, 
   {
