@@ -15,10 +15,6 @@ router.get('/', (req, res) => {
 // Sign-Up route POST
 router.post("/signup", async (req, res) => {
     const { email, username, password } = req.body;
-    console.log(req.body);
-    console.log(email);
-    console.log(username);
-    console.log(password);
     try {
         const emailInUse = await db.user.findOne({ where: { email: email } });
         const usernameInUse = await db.user.findOne({
@@ -103,5 +99,21 @@ router.post("/login", async (req, res) => {
         return res.status(400).json({ msg: "Email or password incorrect" });
     }
 });
+
+// Token checkpoint route POST
+router.post("/check-token", async (req, res) => {
+    const {token} = req.body
+    const payload = jwt_decode(token)
+    try {
+        const requestedUser = await db.user.findOne({ where: { username: payload.username } })
+        if (requestedUser) {
+            res.status(200).json({ userFound: true })
+        }
+    } catch (error) {
+        res.status(401).json({ userFound: false })
+    }
+})
+
+
 
 module.exports = router
