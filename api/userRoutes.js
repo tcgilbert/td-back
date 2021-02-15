@@ -30,7 +30,6 @@ router.post("/signup", async (req, res) => {
                 email: email,
                 password: password,
             });
-            console.log("made it this far");
             bcrypt.genSalt(10, (error, salt) => {
                 if (error) throw Error;
                 bcrypt.hash(newUser.password, salt, async (error, hash) => {
@@ -39,6 +38,17 @@ router.post("/signup", async (req, res) => {
                         // else hash password
                         newUser.password = hash;
                         const createdUser = await newUser.save();
+                        if (createdUser) {
+                            await db.about.create( {
+                                name: '',
+                                nameShow: false,
+                                location: '',
+                                locationShow: false,
+                                work: '',
+                                workShow: false,
+                                userId: createdUser.id
+                            })
+                        }
                         res.status(201).json(createdUser);
                     } catch (err) {
                         res.status(500).json({ msg: "Hashing error", error: err });
@@ -49,6 +59,7 @@ router.post("/signup", async (req, res) => {
     } catch (error) {
         res.status(500).json({ msg: "Signup error", error: error });
     }
+
 });
 
 // Login route POST
