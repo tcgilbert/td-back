@@ -13,6 +13,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/users", require("./api/userRoutes"))
+app.use("/about", require("./api/aboutRoutes"))
 
 const PORT = process.env.PORT || 8000
 const server = app.listen(PORT, () => {
