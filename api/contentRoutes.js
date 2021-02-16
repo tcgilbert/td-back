@@ -18,6 +18,12 @@ router.get("/getall/:id", async (req, res) => {
                     });
                     element.content = blurb;
                 }
+                if (ele.type === "link") {
+                    const link = await db.link.findOne({
+                        where: { id: ele.contentId },
+                    });
+                    element.content = link;
+                }
                 return element;
             })
         );
