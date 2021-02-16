@@ -14,6 +14,8 @@ app.get("/", (req, res) => {
 
 app.use("/users", require("./api/userRoutes"))
 app.use("/about", require("./api/aboutRoutes"))
+app.use("/blurb", require("./api/blurbRoutes"))
+app.use("/content", require("./api/contentRoutes"))
 
 const PORT = process.env.PORT || 8000
 const server = app.listen(PORT, () => {

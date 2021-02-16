@@ -42,7 +42,7 @@ router.put("/update", async (req, res) => {
         await requestedAbout.save();
         res.status(200).json({ updatedAbout: requestedAbout });
     } catch (error) {
-        res.status(400).json({ msg: "Couldn't update about", error: error })
+        res.status(500).json({ msg: "Couldn't update about", error: error })
     }
 });
 
