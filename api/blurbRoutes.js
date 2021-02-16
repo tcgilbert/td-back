@@ -2,7 +2,6 @@ require("dotenv").config();
 const setContentOrder = require("../utils/setContentOrder")
 const express = require("express");
 const router = express.Router();
-
 const db = require("../models");
 
 // Blurb create POST

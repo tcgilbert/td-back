@@ -9,7 +9,8 @@ const setContentOrder = async (createdContent, userId, type) => {
         userId: userId,
         type: type,
         contentId: createdContent.id,
-        index: userContent.length
+        index: userContent.length,
+        show: true,
     })
     return newContent
 
