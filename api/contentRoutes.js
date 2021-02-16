@@ -8,7 +8,7 @@ const db = require("../models");
 router.get("/getall/:id", async (req, res) => {
     const userId = req.params.id;
     try {
-        const content = await db.content.findAll({ where: { userId: userId } });
+        const content = await db.content.findAll({ where: { userId: userId }, order: [["index", "ASC"]] } );
         let userContent = await Promise.all(
             content.map(async (ele) => {
                 let element = { id: ele.id, index: ele.index, type: ele.type };
