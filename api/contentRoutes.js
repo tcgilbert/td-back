@@ -12,7 +12,7 @@ router.get("/getall/:id", async (req, res) => {
         const content = await db.content.findAll({ where: { userId: userId } });
         let userContent = await Promise.all(
             content.map(async (ele) => {
-                let element = { index: ele.index, type: ele.type };
+                let element = { id: ele.id, index: ele.index, type: ele.type };
                 if (ele.type === "blurb") {
                     const blurb = await db.blurb.findOne({
                         where: { id: ele.contentId },
