@@ -24,6 +24,12 @@ router.get("/getall/:id", async (req, res) => {
                     });
                     element.content = link;
                 }
+                if (ele.type === "soundtrack") {
+                    const soundtrack = await db.soundtrack.findOne({
+                        where: { id: ele.contentId }
+                    })
+                    element.content = soundtrack
+                }
                 return element;
             })
         );
