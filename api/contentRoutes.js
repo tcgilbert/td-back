@@ -4,14 +4,45 @@ const router = express.Router();
 
 const db = require("../models");
 
+const deleteByType = async (type, id) => {
+    if (type === "blurb") {
+        const toDelete = await db.blurb.findOne({ where: { id: id } });
+        await toDelete.destroy();
+    } else if (type === "link") {
+        const toDelete = await db.link.findOne({ where: { id: id } });
+        await toDelete.destroy();
+    } else {
+        const toDelete = await db.soundtrack.findOne({ where: { id: id } });
+        await toDelete.destroy();
+    }
+};
+
+const resetIndices = async (array) => {
+    for (let i = 0; i < array.length; i++) {
+        const content = await db.content.findOne({
+            where: { id: array[i].id },
+        });
+        content.index = i;
+        await content.save()
+    }
+}
+
 // Get users content GET
 router.get("/getall/:id", async (req, res) => {
     const userId = req.params.id;
     try {
-        const content = await db.content.findAll({ where: { userId: userId }, order: [["index", "ASC"]] } );
+        const content = await db.content.findAll({
+            where: { userId: userId },
+            order: [["index", "ASC"]],
+        });
         let userContent = await Promise.all(
             content.map(async (ele) => {
-                let element = { id: ele.id, index: ele.index, type: ele.type };
+                let element = {
+                    userId: userId,
+                    id: ele.id,
+                    index: ele.index,
+                    type: ele.type,
+                };
                 if (ele.type === "blurb") {
                     const blurb = await db.blurb.findOne({
                         where: { id: ele.contentId },
@@ -26,14 +57,32 @@ router.get("/getall/:id", async (req, res) => {
                 }
                 if (ele.type === "soundtrack") {
                     const soundtrack = await db.soundtrack.findOne({
-                        where: { id: ele.contentId }
-                    })
-                    element.content = soundtrack
+                        where: { id: ele.contentId },
+                    });
+                    element.content = soundtrack;
                 }
                 return element;
             })
         );
         res.status(200).json({ userContent, contentRaw: content });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+});
+
+// Delete content DELETE
+router.delete("/delete", async (req, res) => {
+    const { contentId, type, typeId, index, userId } = req.body;
+    try {
+        const toDelete = await db.content.findOne({ where: { id: contentId } });
+        await toDelete.destroy();
+        await deleteByType(type, typeId)
+        const content = await db.content.findAll({
+            where: { userId: userId },
+            order: [["index", "ASC"]],
+        });
+        await resetIndices(content)
+        res.status(200).json({ msg: "Successfully deleted and updated content"})
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -53,7 +102,7 @@ router.put("/update", async (req, res) => {
                 return content;
             })
         );
-        res.status(200).json({ msg: "Content updated"})
+        res.status(200).json({ msg: "Content updated" });
     } catch (error) {
         res.status(500).json({ error });
     }
