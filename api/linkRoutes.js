@@ -13,7 +13,6 @@ router.post("/create", async (req, res) => {
             userId: userId,
             url: url,
             title: title,
-            comment: comment
         })
         await setContentOrder(link, userId, "link")
         res.status(201).json({ link })

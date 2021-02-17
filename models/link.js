@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
   link.init({
     url: DataTypes.STRING,
     title: DataTypes.STRING,
-    comment: DataTypes.STRING,
     userId: DataTypes.INTEGER
   }, {
     sequelize,
