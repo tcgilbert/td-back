@@ -21,6 +21,20 @@ router.post("/create", async (req, res) => {
     }
 })
 
+// Link update PUT
+router.put('/update', async (req, res) => {
+    const { id, newUrl, newTitle } = req.body
+    try {
+        const link = await db.link.findOne({ where: { id: id }})
+        link.url = newUrl
+        link.title = newTitle
+        await link.save()
+        res.status(200).json({ msg: "link updated"})
+    } catch (error) {
+        res.status(500).json({ msg: "Couldn't update link", error: error })
+    }
+})
+
 
 
 module.exports = router
