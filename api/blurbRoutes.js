@@ -20,6 +20,19 @@ router.post('/create', async (req, res) => {
     }
 })
 
+// Blurb update PUT
+router.put('/update', async (req, res) => {
+    const { id, newContent, newHeading } = req.body
+    try {
+        const blurb = await db.blurb.findOne({ where: { id: id }})
+        blurb.content = newContent
+        blurb.heading = newHeading
+        await blurb.save()
+        res.status(200).json({ msg: "Blurb updated"})
+    } catch (error) {
+        res.status(500).json({ msg: "Couldn't update blurb", error: error })
+    }
+})
 
 
 module.exports = router;
