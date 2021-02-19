@@ -42,6 +42,7 @@ router.get("/getall/:id", async (req, res) => {
                     id: ele.id,
                     index: ele.index,
                     type: ele.type,
+                    show: ele.show
                 };
                 if (ele.type === "blurb") {
                     const blurb = await db.blurb.findOne({
@@ -103,6 +104,19 @@ router.put("/update", async (req, res) => {
             })
         );
         res.status(200).json({ msg: "Content updated" });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+});
+
+// Update show prop PUT
+router.put("/update/show", async (req, res) => {
+    const { id, show } = req.body;
+    try {
+        const content = await db.content.findOne( { where: { id: id }})
+        content.show = show
+        content.save()
+        res.status(200).json({ updated: content });
     } catch (error) {
         res.status(500).json({ error });
     }
