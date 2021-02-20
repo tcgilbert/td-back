@@ -37,7 +37,7 @@ router.put('/update', async (req, res) => {
         link.url = newUrl
         link.title = newTitle
         await link.save()
-        res.status(200).json({ msg: "link updated"})
+        res.status(200).json({ link })
     } catch (error) {
         res.status(500).json({ msg: "Couldn't update link", error: error })
     }

@@ -36,7 +36,7 @@ router.put("/update", async (req, res) => {
         blurb.content = newContent;
         blurb.heading = newHeading;
         await blurb.save();
-        res.status(200).json({ msg: "Blurb updated" });
+        res.status(200).json({ blurb });
     } catch (error) {
         res.status(500).json({ msg: "Couldn't update blurb", error: error });
     }
