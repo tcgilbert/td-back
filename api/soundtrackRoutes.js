@@ -15,8 +15,17 @@ router.post('/create', async (req, res) => {
             comment: comment,
             type: type
         })
-        await setContentOrder(soundtrack, userId, "soundtrack")
-        res.status(201).json({ soundtrack })
+        
+        const newContent = await setContentOrder(soundtrack, userId, "soundtrack")
+        let reformatted = {
+            userId: newContent.userId,
+            id: newContent.id,
+            index: newContent.index,
+            type: newContent.type,
+            show: newContent.show,
+            content: soundtrack
+        };
+        res.status(201).json({ reformatted })
     } catch (error) {
         res.status(500).json({ msg: "Couldn't create soundtrack", error: error })
     }

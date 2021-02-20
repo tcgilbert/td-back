@@ -14,8 +14,16 @@ router.post("/create", async (req, res) => {
             url: url,
             title: title,
         })
-        await setContentOrder(link, userId, "link")
-        res.status(201).json({ link })
+        const newContent = await setContentOrder(link, userId, "link")
+        let reformatted = {
+            userId: newContent.userId,
+            id: newContent.id,
+            index: newContent.index,
+            type: newContent.type,
+            show: newContent.show,
+            content: link
+        };
+        res.status(201).json({ reformatted })
     } catch (error) {
         res.status(500).json({ msg: "Couldn't create link", error: error })
     }
