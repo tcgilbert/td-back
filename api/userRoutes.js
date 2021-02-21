@@ -46,7 +46,10 @@ router.post("/signup", async (req, res) => {
                                 locationShow: false,
                                 work: '',
                                 workShow: false,
-                                userId: createdUser.id
+                                pictureId: null,
+                                pictureShow: true,
+                                userId: createdUser.id,
+                                fileName: "default"
                             })
                         }
                         res.status(201).json(createdUser);
