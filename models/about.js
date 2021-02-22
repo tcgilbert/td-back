@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     work: DataTypes.STRING,
     workShow: DataTypes.BOOLEAN,
     pictureId: DataTypes.STRING,
+    picture: DataTypes.STRING,
     fileName: DataTypes.STRING,
     userId: DataTypes.INTEGER
   }, {
