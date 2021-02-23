@@ -5,20 +5,6 @@ const router = express.Router();
 
 const db = require("../models");
 
-
-router.get("/profile-pic", async (req, res) => {
-    const public_id = req.query.public_id
-    console.log(public_id);
-    try {
-        const image = await cloudinary.api.resources_by_ids([public_id])
-        console.log(image);
-        res.send("oohhhyeyeah")
-    } catch (error) {
-        console.log(error);
-    }
-})
-
-
 router.post("/profile-pic", async (req, res) => {
     const image = req.body.base64EncodedImage;
     const { fileName, userId, publicId } = req.body;

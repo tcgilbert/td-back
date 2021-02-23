@@ -11,7 +11,11 @@ const deleteByType = async (type, id) => {
     } else if (type === "link") {
         const toDelete = await db.link.findOne({ where: { id: id } });
         await toDelete.destroy();
-    } else {
+    } else if (type === "comment") {
+        const toDelete = await db.comment.findOne({ where: { id: id } });
+        await toDelete.destroy();
+    }
+    else {
         const toDelete = await db.soundtrack.findOne({ where: { id: id } });
         await toDelete.destroy();
     }
@@ -55,6 +59,12 @@ router.get("/getall/:id", async (req, res) => {
                         where: { id: ele.contentId },
                     });
                     element.content = link;
+                }
+                if (ele.type === "comment") {
+                    const comment = await db.comment.findOne({
+                        where: { id: ele.contentId },
+                    });
+                    element.content = comment;
                 }
                 if (ele.type === "soundtrack") {
                     const soundtrack = await db.soundtrack.findOne({
