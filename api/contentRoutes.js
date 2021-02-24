@@ -14,6 +14,9 @@ const deleteByType = async (type, id) => {
     } else if (type === "comment") {
         const toDelete = await db.comment.findOne({ where: { id: id } });
         await toDelete.destroy();
+    } else if (type === "book") {
+        const toDelete = await db.book.findOne({ where: { id: id } });
+        await toDelete.destroy();
     }
     else {
         const toDelete = await db.soundtrack.findOne({ where: { id: id } });
@@ -72,6 +75,12 @@ router.get("/getall/:id", async (req, res) => {
                     });
                     element.content = soundtrack;
                 }
+                if (ele.type === "book") {
+                    const book = await db.book.findOne({
+                        where: { id: ele.contentId },
+                    });
+                    element.content = book;
+                }
                 return element;
             })
         );
@@ -83,7 +92,7 @@ router.get("/getall/:id", async (req, res) => {
 
 // Delete content DELETE
 router.delete("/delete", async (req, res) => {
-    const { contentId, type, typeId, index, userId } = req.body;
+    const { contentId, type, typeId, userId } = req.body;
     try {
         const toDelete = await db.content.findOne({ where: { id: contentId } });
         await toDelete.destroy();

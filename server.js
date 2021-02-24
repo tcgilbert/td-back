@@ -18,6 +18,7 @@ app.use("/blurb", require("./api/blurbRoutes"))
 app.use("/link", require("./api/linkRoutes"))
 app.use("/comment", require("./api/commentRoutes"))
 app.use("/soundtrack", require("./api/soundtrackRoutes"))
+app.use("/book", require("./api/bookRoutes"))
 app.use("/content", require("./api/contentRoutes"))
 app.use("/cloudinary", require("./api/cloudinaryRoutes"))
 

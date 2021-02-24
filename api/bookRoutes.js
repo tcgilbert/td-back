@@ -4,28 +4,27 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 
-// Soundtrack create POST
+// Book create POST
 router.post('/create', async (req, res) => {
-    const { userId, spotifyId, comment, type } = req.body
+    const { userId, apiId, title} = req.body
     try {        
-        const soundtrack = await db.soundtrack.create({ 
+        const book = await db.book.create({ 
             userId: userId,
-            spotifyId: spotifyId,
-            comment: comment,
-            type: type
+            apiId: apiId,
+            title: title
         })
-        const newContent = await setContentOrder(soundtrack, userId, "soundtrack")
+        const newContent = await setContentOrder(book, userId, "book")
         let reformatted = {
             userId: newContent.userId,
             id: newContent.id,
             index: newContent.index,
             type: newContent.type,
             show: newContent.show,
-            content: soundtrack
+            content: book
         };
         res.status(201).json({ reformatted })
     } catch (error) {
-        res.status(500).json({ msg: "Couldn't create soundtrack", error: error })
+        res.status(500).json({ msg: "Couldn't create book", error: error })
     }
 })
 
