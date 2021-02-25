@@ -164,7 +164,6 @@ router.delete("/delete/:userId", async (req, res) => {
             where: { userId: userId },
         });
         if (userContent.length > 0) {
-            console.log("BLAHHH");
             await Promise.all(
                 userContent.forEach(async (ele) => {
                     if (ele.type === "blurb") {
@@ -205,7 +204,8 @@ router.delete("/delete/:userId", async (req, res) => {
             );
         }
         const about = await db.about.findOne({ where: { userId: userId }})
-        await cloudinary.uploader.destroy(about.pictureId);
+        console.log(about.pictureId);
+        if (about.pictureId) await cloudinary.uploader.destroy(about.pictureId);
         await about.destroy()
         const user = await db.user.findOne({ where: { id: userId }})
         await user.destroy()
