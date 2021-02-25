@@ -1,16 +1,24 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const db = require("../models");
 
-router.get('/', (req, res) => {
-    res.send("hit the users endpoint")
-})
+router.get("/unique/:username", async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await db.user.findOne({ where: { username: username } });
+        res.status(200).json({ userId: user.id });
+    } catch (error) {
+        res.status(404).json({
+            msg: "Could not find page with that username",
+        });
+    }
+});
 
 // Sign-Up route POST
 router.post("/signup", async (req, res) => {
@@ -39,21 +47,24 @@ router.post("/signup", async (req, res) => {
                         newUser.password = hash;
                         const createdUser = await newUser.save();
                         if (createdUser) {
-                            await db.about.create( {
-                                name: '',
+                            await db.about.create({
+                                name: "",
                                 nameShow: false,
-                                location: '',
+                                location: "",
                                 locationShow: false,
-                                work: '',
+                                work: "",
                                 workShow: false,
                                 pictureId: null,
                                 userId: createdUser.id,
-                                fileName: "default"
-                            })
+                                fileName: "default",
+                            });
                         }
                         res.status(201).json(createdUser);
                     } catch (err) {
-                        res.status(500).json({ msg: "Hashing error", error: err });
+                        res.status(500).json({
+                            msg: "Hashing error",
+                            error: err,
+                        });
                     }
                 });
             });
@@ -61,7 +72,6 @@ router.post("/signup", async (req, res) => {
     } catch (error) {
         res.status(500).json({ msg: "Signup error", error: error });
     }
-
 });
 
 // Login route POST
@@ -115,18 +125,18 @@ router.post("/login", async (req, res) => {
 
 // Token checkpoint route POST
 router.post("/check-token", async (req, res) => {
-    const {token} = req.body
-    const payload = jwt_decode(token)
+    const { token } = req.body;
+    const payload = jwt_decode(token);
     try {
-        const requestedUser = await db.user.findOne({ where: { username: payload.username } })
+        const requestedUser = await db.user.findOne({
+            where: { username: payload.username },
+        });
         if (requestedUser) {
-            res.status(200).json({ userFound: true })
+            res.status(200).json({ userFound: true });
         }
     } catch (error) {
-        res.status(401).json({ userFound: false })
+        res.status(401).json({ userFound: false });
     }
-})
+});
 
-
-
-module.exports = router
+module.exports = router;
