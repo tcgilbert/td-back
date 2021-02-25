@@ -21,7 +21,6 @@ router.post("/profile-pic", async (req, res) => {
     }
     try {
         const uploadedRes = await cloudinary.uploader.upload(image, cloudinaryConfig);
-        console.log(uploadedRes);
         const about = await db.about.findOne({ where: { userId: userId } });
         about.pictureId = uploadedRes.public_id
         about.picture = uploadedRes.url

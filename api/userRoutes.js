@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { cloudinary } = require("../config/cloudinary");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -21,6 +22,7 @@ router.get("/unique/:username", async (req, res) => {
     }
 });
 
+// Validate username
 router.get("/validate/:username", async (req, res) => {
     const { username } = req.params;
     try {
@@ -151,6 +153,65 @@ router.post("/check-token", async (req, res) => {
         }
     } catch (error) {
         res.status(401).json({ userFound: false });
+    }
+});
+
+// Delete user
+router.delete("/delete/:userId", async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const userContent = await db.content.findAll({
+            where: { userId: userId },
+        });
+        if (userContent.length > 0) {
+            console.log("BLAHHH");
+            await Promise.all(
+                userContent.forEach(async (ele) => {
+                    if (ele.type === "blurb") {
+                        let blurb = await db.blurb.findOne({
+                            where: { id: ele.contentId },
+                        });
+                        await blurb.destroy();
+                    }
+                    if (ele.type === "soundtrack") {
+                        let soundtrack = await db.soundtrack.findOne({
+                            where: { id: ele.contentId },
+                        });
+                        await soundtrack.destroy();
+                    }
+                    if (ele.type === "link") {
+                        let link = await db.link.findOne({
+                            where: { id: ele.contentId },
+                        });
+                        await link.destroy();
+                    }
+                    if (ele.type === "book") {
+                        let book = await db.book.findOne({
+                            where: { id: ele.contentId },
+                        });
+                        await book.destroy();
+                    }
+                    if (ele.type === "comment") {
+                        let comment = await db.comment.findOne({
+                            where: { id: ele.contentId },
+                        });
+                        await comment.destroy();
+                    }
+                    let content = await db.content.findOne({
+                        where: { id: ele.id },
+                    });
+                    await content.destroy();
+                })
+            );
+        }
+        const about = await db.about.findOne({ where: { userId: userId }})
+        await cloudinary.uploader.destroy(about.pictureId);
+        await about.destroy()
+        const user = await db.user.findOne({ where: { id: userId }})
+        await user.destroy()
+        res.status(200).json({ msg: "User successfully deleted" });
+    } catch (error) {
+        res.status(500).json({ msg: "Failed to delete user", error: error });
     }
 });
 
