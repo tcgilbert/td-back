@@ -8,6 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const db = require("../models");
 
+// Get user id from username
 router.get("/unique/:username", async (req, res) => {
     const { username } = req.params;
     try {
@@ -17,6 +18,20 @@ router.get("/unique/:username", async (req, res) => {
         res.status(404).json({
             msg: "Could not find page with that username",
         });
+    }
+});
+
+router.get("/validate/:username", async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await db.user.findOne({ where: { username: username } });
+        if (user) {
+            res.status(200).json({ usernameTaken: true });
+        } else {
+            res.status(200).json({ usernameTaken: false });
+        }
+    } catch (error) {
+        res.status(404).json({ usernameTaken: false });
     }
 });
 
