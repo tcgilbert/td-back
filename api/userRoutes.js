@@ -120,7 +120,7 @@ router.post("/login", async (req, res) => {
                 jwt.sign(
                     payload,
                     JWT_SECRET,
-                    { expiresIn: 30 },
+                    { expiresIn: "2h" },
                     (error, token) => {
                         if (error) {
                             console.log("error creating token");
