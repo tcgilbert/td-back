@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    maintenance: {
+      type: DataTypes.BOOLEAN
     }
   }, 
   {

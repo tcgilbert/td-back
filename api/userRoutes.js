@@ -14,13 +14,26 @@ router.get("/unique/:username", async (req, res) => {
     const { username } = req.params;
     try {
         const user = await db.user.findOne({ where: { username: username } });
-        res.status(200).json({ userId: user.id });
+        res.status(200).json({ userId: user.id, maintenance: user.maintenance });
     } catch (error) {
         res.status(404).json({
             msg: "Could not find page with that username",
         });
     }
 });
+
+// Update Maintenance prop
+router.put("/update/maintenance", async (req, res) => {
+    const { userId, maintenance } = req.body
+    try {
+        const reqUser = await db.user.findOne({ where: { id: userId }})
+        reqUser.maintenance = maintenance
+        await reqUser.save()
+        res.status(200).json({ msg: "Property updated"})
+    } catch (error) {
+        res.status(500).json({ msg: "failed to update property"})
+    }
+})
 
 // Validate username
 router.get("/validate/:username", async (req, res) => {
@@ -54,6 +67,7 @@ router.post("/signup", async (req, res) => {
                 username: username,
                 email: email,
                 password: password,
+                maintenance: false
             });
             bcrypt.genSalt(10, (error, salt) => {
                 if (error) throw Error;
@@ -115,6 +129,7 @@ router.post("/login", async (req, res) => {
                 const payload = {
                     id: requestedUser.id,
                     username: requestedUser.username,
+                    maintenance: requestedUser.maintenance
                 };
                 // token signature
                 jwt.sign(
