@@ -129,7 +129,6 @@ router.post("/login", async (req, res) => {
                 const payload = {
                     id: requestedUser.id,
                     username: requestedUser.username,
-                    maintenance: requestedUser.maintenance
                 };
                 // token signature
                 jwt.sign(
