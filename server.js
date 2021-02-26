@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
+
 // middleware
 app.use(cors())
 app.use(express.urlencoded({extended: false}))
@@ -21,6 +22,7 @@ app.use("/soundtrack", require("./api/soundtrackRoutes"))
 app.use("/book", require("./api/bookRoutes"))
 app.use("/content", require("./api/contentRoutes"))
 app.use("/cloudinary", require("./api/cloudinaryRoutes"))
+app.use("/email", require("./api/emailRoutes"))
 
 const PORT = process.env.PORT || 8000
 const server = app.listen(PORT, () => {
