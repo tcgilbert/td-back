@@ -120,7 +120,7 @@ router.post("/login", async (req, res) => {
                 jwt.sign(
                     payload,
                     JWT_SECRET,
-                    { expiresIn: "1h" },
+                    { expiresIn: 30 },
                     (error, token) => {
                         if (error) {
                             console.log("error creating token");
@@ -144,16 +144,23 @@ router.post("/login", async (req, res) => {
 router.post("/check-token", async (req, res) => {
     const { token } = req.body;
     const payload = jwt_decode(token);
-    try {
-        const requestedUser = await db.user.findOne({
-            where: { username: payload.username },
-        });
-        if (requestedUser) {
-            res.status(200).json({ userFound: true });
+    jwt.verify(token, JWT_SECRET, async (err, decoded) => {
+        if (err) {
+            res.status(401).json({ userFound: false });
+        } else {
+            try {
+                const requestedUser = await db.user.findOne({
+                    where: { username: payload.username },
+                });
+                if (requestedUser) {
+                    res.status(200).json({ userFound: true });
+                }
+            } catch (error) {
+                res.status(401).json({ userFound: false });
+            }
         }
-    } catch (error) {
-        res.status(401).json({ userFound: false });
-    }
+    })
+   
 });
 
 // Delete user
